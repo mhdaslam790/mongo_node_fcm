@@ -1,5 +1,7 @@
 import { IsEmail, IsString, MinLength } from "class-validator";
 
+
+//mongoschema
 export interface IUser {
     id: string;
     username: string;
