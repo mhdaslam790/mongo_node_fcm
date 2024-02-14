@@ -25,11 +25,9 @@ export class FCMService implements IFCMService {
     public async sendNotification(notificationData: FCMData) {
         try {
             const message = {
-                notification: {
+                data: {
                     title: notificationData.title,
                     body: notificationData.body,
-                },
-                data: {
                     whatsappUrl: `https://wa.me/${notificationData.whatsappNumber}`,
                     phoneNumber: notificationData.phoneNumber,
                 },
@@ -39,9 +37,10 @@ export class FCMService implements IFCMService {
             this.logger.debug('Successfully sent notification:', message);
             // Dispatch event and log success
             this.eventDispatcher.dispatch(AppEvents.user.sendNotification, message);
-            
+
             return `Successfully sent notification: ${response}`;
         } catch (error) {
+            this.logger.error(`Failed to send notification: ${error}`);
             throw createError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to send notification');
         }
     }

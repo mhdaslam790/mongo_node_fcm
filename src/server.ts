@@ -5,11 +5,12 @@ import { loggerDev } from './utils/logger';
 import { config } from './config';
 import { loaders } from './loaders';
 
+const HOST:string = '192.168.216.205';
 const startServer = async () => {
     const app: Application = express();
     await loaders(app);
     loggerDev.debug(`MODE ENV ${process.env.NODE_ENV}`);
-    app.listen(config.port, () => {
+    app.listen(8000 ,HOST, () => {
         loggerDev.info(`Server listening on port: ${config.port}`);
     })
         .on('error', err => {

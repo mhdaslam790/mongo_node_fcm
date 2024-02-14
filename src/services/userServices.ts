@@ -31,44 +31,45 @@ export class UserService implements IUserService {
     }
   }
   public async loginUser(userInput: IUserInput): Promise<any> {
-    const userCheck = await this.userModel.findOne({ username: userInput.username });
-    this.logger.info(`loginUser: ${userCheck.username}`);
-    this.logger.info(`loginUser: ${userCheck.email}`);
-    this.logger.info(`loginUser: ${userCheck.password}`);
-    if (!userCheck) {
-    
-      throw createError(httpStatus.FORBIDDEN, `Invalid credentials`);
-    }
-    this.logger.info(`loginUser: ${userCheck.username}`);
-    const isMatch = await bcrypt.compare(
-      userInput.password,
-      userCheck.password
-    );
-
-    this.logger.debug(`isMatch: ${isMatch}`);
-    if (!isMatch) {
-      this.logger.debug('loginUser: failed to verify password');
-      throw createError(httpStatus.FORBIDDEN, `Invalid  credentials`);
-    }
-    const payload = {
-      user: {
-        id: userCheck.id,
-      }
-    };
-    const jwtSecret = config.jwtSecret;
     try {
-      const token = jwt.sign(payload, jwtSecret, { expiresIn: "24h" });
-      this.eventDispatcher.dispatch(AppEvents.user.signIn, userCheck);
-      return token;
-    } catch (error) {
-      throw createError(
-        httpStatus.FORBIDDEN,
-        `loginUser: Error jsonwebtoken`,
+      const userCheck = await this.userModel.findOne({ username: userInput.username });
+      
+      if (!userCheck) {
+
+        throw createError(httpStatus.NOT_FOUND, `Invalid credentials`);
+      }
+      this.logger.info(`loginUser: ${userCheck.username}`);
+      const isMatch = await bcrypt.compare(
+        userInput.password,
+        userCheck.password
       );
+
+      this.logger.debug(`isMatch: ${isMatch}`);
+      if (!isMatch) {
+        this.logger.debug('loginUser: failed to verify password');
+        throw createError(httpStatus.NOT_FOUND, `Invalid  credentials`);
+      }
+      const payload = {
+        user: {
+          id: userCheck.id,
+        }
+      };
+      const jwtSecret = config.jwtSecret;
+      try {
+        const token = jwt.sign(payload, jwtSecret, { expiresIn: "24h" });
+        await this.userModel.updateOne({ username: userInput.username },{$set: {fcmToken:userInput.fcmToken}});
+        this.eventDispatcher.dispatch(AppEvents.user.signIn, userCheck);
+        return token;
+      } catch (error) {
+        throw createError(
+          httpStatus.FORBIDDEN,
+          `loginUser: Error jsonwebtoken`,
+        );
+      }
+    } catch (error) {
+      this.logger.error(`Error loginUser: ${error}`);
+      throw error;
     }
-  } catch(error) {
-    this.logger.error(`Error loginUser: ${error}`);
-    throw error;
   }
   /* Register user */
   public async registerUser(userInput: IUserInput) {

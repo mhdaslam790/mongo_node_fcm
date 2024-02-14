@@ -11,6 +11,7 @@ import { loggerDev } from "../utils/logger";
 function validaton<T extends object>(type: ClassType<T>): RequestHandler {
     return handler(async (req: Request, res: Response, next: NextFunction) => {
         const parsedBody = plainToClass(type, req.body);
+        loggerDev.info(req.body);
         const errors = await validate(parsedBody);
         if (errors.length !== 0) {
             loggerDev.debug(`validation error ${errors}`);

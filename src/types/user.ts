@@ -7,6 +7,7 @@ export interface IUser {
     username: string;
     email: string;
     password: string;
+    fcmToken:string;
 }
 export interface IUserService {
     getUser: (id: string) => Promise<IUser>;
@@ -22,6 +23,7 @@ export interface IUserInput {
     username?: string;
     email?: string;
     password: string;
+    fcmToken?:string;
 }
 export class UserSigninDto {
     @IsString()
@@ -29,6 +31,8 @@ export class UserSigninDto {
 
     @IsString()
     password: string;
+    @IsString()
+    fcmToken:string;
 }
 /* Data transfer object */
 export class UserSignupDto {
@@ -41,5 +45,7 @@ export class UserSignupDto {
     @IsString()
     @MinLength(3)
     password: string;
+    @IsString()
+    fcmToken:string;
   }
   

@@ -15,10 +15,9 @@ userRouter.get(
   middleware.userAuth,
   middleware.checkObjectId,
   handler(async (req: Request, res: Response) => {
-    // user.req always get from middleware
     const userService = Container.get(UserService);
     const user = await userService.getUser(req.body.id);
-    res.json(user);
+    res.status(200).json(user);
   }),
 );
 userRouter.post("/login", validation(UserSigninDto),
@@ -37,7 +36,7 @@ userRouter.post(
     async (req: Request, res: Response): Promise<void> => {
       const userService = Container.get(UserService);
       const token = await userService.registerUser(req.body);
-      res.json({ token });
+      res.status(200).json({ token });
     },
   ),
 );
