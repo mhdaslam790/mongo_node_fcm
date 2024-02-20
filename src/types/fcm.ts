@@ -6,6 +6,7 @@ export interface FCMData {
     whatsappNumber: string;
     title: string;
     body: string;
+    leadId: string;
 
 }
 
@@ -24,4 +25,6 @@ export class FCMDataDto {
     title: string;
     @IsString()
     body: string;
+    @IsString()
+    leadId: string;
 }

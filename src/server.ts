@@ -5,7 +5,7 @@ import { loggerDev } from './utils/logger';
 import { config } from './config';
 import { loaders } from './loaders';
 
-const HOST:string = '192.168.216.205';
+const HOST:string = '192.168.1.4';
 const startServer = async () => {
     const app: Application = express();
     await loaders(app);

@@ -30,6 +30,7 @@ export class FCMService implements IFCMService {
                     body: notificationData.body,
                     whatsappUrl: `https://wa.me/${notificationData.whatsappNumber}`,
                     phoneNumber: notificationData.phoneNumber,
+                    leadId:notificationData.leadId,
                 },
                 token: notificationData.token,
             };
